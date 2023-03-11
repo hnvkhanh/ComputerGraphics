@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+		</style>
+	</head>
+	<body>
+		<script type="module">
+			import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+
+            function addRandomBox(event, scene) {                
+                const geometry = new THREE.BoxGeometry( 1, 1, 1 );                
+                const material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+                const box = new THREE.Mesh( geometry, material );  
+                box.position.y = Math.random() * 20 * binary[Math.floor(Math.random() * 2)];     
+                box.position.x = Math.random() * 40 * binary[Math.floor(Math.random() * 2)];          
+                scene.add( box );                
+
+                return scene, box
+            }
+
+            function boxRotation(box, index, array){                
+                box.rotation.x += 0.02;
+                box.rotation.y += 0.02;
+                box.rotation.z += 0.02;     
+                
+                box.position.x += stepX * step[index];                         
+
+                if (box.position.x > 42 || box.position.x < -42 ){                                       
+                    step[index] = step[index] * -1;                       
+                    box.position.y +=  binary[Math.floor(Math.random() * 2)] * 0.15;                                                                      
+                } 
+
+            }
+
+			const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xE8D5C4);
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+            
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+            camera.position.z = 30;
+
+            const boxList = [];
+            const step = [];
+            const binary = [1, -1];            
+            let stepX = 0.3;            
+
+            document.addEventListener("keydown", (e) =>{      
+                let box;                                       
+                scene, box = addRandomBox(e, scene);                
+                boxList.push(box);    
+                step.push(1)                        
+            });
+
+			function animate() {
+				requestAnimationFrame( animate );				                                
+                boxList.forEach(boxRotation);                                                   
+                                     
+				renderer.render( scene, camera );
+			}            
+			animate();
+		</script>
+	</body>
+</html>
