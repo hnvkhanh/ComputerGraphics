@@ -22,18 +22,38 @@
                 return scene, box
             }
 
-            function boxRotation(box, index, array){                
+            function boxRotation(animatedBox, index, array){   
+                var box = animatedBox.box;             
                 box.rotation.x += 0.02;
                 box.rotation.y += 0.02;
                 box.rotation.z += 0.02;     
                 
-                box.position.x += stepX * step[index];                         
+                box.position.x += animatedBox.velocity.velocX * animatedBox.direction.directX;    
+                box.position.y += animatedBox.velocity.velocY * animatedBox.direction.directY;                         
 
-                if (box.position.x > 42 || box.position.x < -42 ){                                       
-                    step[index] = step[index] * -1;                       
+                if (box.position.x >  42 || box.position.x < -42 ){    
+                    animatedBox.direction.directX *= -1;                                                                     
                     box.position.y +=  binary[Math.floor(Math.random() * 2)] * 0.15;                                                                      
                 } 
 
+                if (box.position.y >  20 || box.position.y < -20 ){    
+                    animatedBox.direction.directY *= -1;                                                                                                                                                           
+                } 
+
+            }
+
+            class animatedBox{
+                constructor(box){
+                    this.box = box;
+                    this.direction = {
+                        directX : 1,
+                        directY : 1
+                    }
+                    this.velocity = {
+                        velocX : 0.3,
+                        velocY : 0.3
+                    }
+                }
             }
 
 			const scene = new THREE.Scene();
@@ -49,12 +69,13 @@
             const boxList = [];
             const step = [];
             const binary = [1, -1];            
-            let stepX = 0.3;            
+            let stepX = 0.3;       
+            let stepY = 0.3;     
 
             document.addEventListener("keydown", (e) =>{      
                 let box;                                       
                 scene, box = addRandomBox(e, scene);                
-                boxList.push(box);    
+                boxList.push(new animatedBox(box));    
                 step.push(1)                        
             });
 
