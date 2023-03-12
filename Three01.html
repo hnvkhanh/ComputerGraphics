@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="utf-8">
-		<title>Random Box Chaos</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Random Box Chaos</title>        
 		<style>
-			body { margin: 0; }
+			body { 
+                margin: 0;                
+            }
 		</style>
 	</head>
-	<body>
+	<body>        
+
 		<script type="module">
 			import * as THREE from 'https://unpkg.com/three/build/three.module.js';
 
@@ -84,7 +88,7 @@
             camera.position.z = 20;
 
             const boxList = [];            
-            const binary = [1, -1];                          
+            const binary = [1, -1];                                      
 
             document.addEventListener("keydown", (e) =>{      
                 let box;                                       
@@ -101,5 +105,6 @@
 			}            
 			animate();
 		</script>
+
 	</body>
 </html>
