@@ -22,22 +22,20 @@
                 return scene, box
             }
 
-            function boxRotation(animatedBox, index, array){   
-                var box = animatedBox.box;             
-                box.rotation.x += 0.02;
-                box.rotation.y += 0.02;
-                box.rotation.z += 0.02;     
-                
-                box.position.x += animatedBox.velocity.velocX * animatedBox.direction.directX;    
-                box.position.y += animatedBox.velocity.velocY * animatedBox.direction.directY;                         
+            function boxAnimation(animatedBox, index, array){   
+                var box = animatedBox.box;                                
 
-                if (box.position.x >  42 || box.position.x < -42 ){    
+                animatedBox.rotateBox();
+                animatedBox.moveBox();                                      
+
+                if (box.position.x >  42 || box.position.x < -42 ){                        
                     animatedBox.direction.directX *= -1;                                                                     
-                    box.position.y +=  binary[Math.floor(Math.random() * 2)] * 0.15;                                                                      
+                    animatedBox.randomChangeVelocity();                                                              
                 } 
 
                 if (box.position.y >  20 || box.position.y < -20 ){    
-                    animatedBox.direction.directY *= -1;                                                                                                                                                           
+                    animatedBox.direction.directY *= -1;     
+                    animatedBox.randomChangeVelocity();                                                                                                                                                      
                 } 
 
             }
@@ -46,13 +44,29 @@
                 constructor(box){
                     this.box = box;
                     this.direction = {
-                        directX : 1,
-                        directY : 1
+                        directX : binary[Math.floor(Math.random() * 2)],
+                        directY : binary[Math.floor(Math.random() * 2)]
                     }
                     this.velocity = {
                         velocX : 0.3,
                         velocY : 0.3
                     }
+                }
+
+                randomChangeVelocity(){
+                    this.velocity.velocY +=  binary[Math.floor(Math.random() * 2)] * 0.01;
+                    this.velocity.velocX +=  binary[Math.floor(Math.random() * 2)] * 0.01;       
+                }
+
+                rotateBox(){
+                    this.box.rotation.x += 0.02;
+                    this.box.rotation.y += 0.02;
+                    this.box.rotation.z += 0.02; 
+                }
+
+                moveBox(){
+                    this.box.position.x += this.velocity.velocX * this.direction.directX;    
+                    this.box.position.y += this.velocity.velocY * this.direction.directY;  
                 }
             }
 
@@ -81,7 +95,7 @@
 
 			function animate() {
 				requestAnimationFrame( animate );				                                
-                boxList.forEach(boxRotation);                                                   
+                boxList.forEach(boxAnimation);                                                   
                                      
 				renderer.render( scene, camera );
 			}            
