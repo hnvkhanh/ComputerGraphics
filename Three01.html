@@ -18,8 +18,8 @@
                 const edges = new THREE.EdgesGeometry( geometry );
                 const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x808080 } ) );
                 box.add( line ); 
-                box.position.y = Math.random() * 20 * binary[Math.floor(Math.random() * 2)];     
-                box.position.x = Math.random() * 40 * binary[Math.floor(Math.random() * 2)];          
+                box.position.y = Math.random() * 10 * binary[Math.floor(Math.random() * 2)];     
+                box.position.x = Math.random() * 25 * binary[Math.floor(Math.random() * 2)];          
                 scene.add( box );                
 
                 return scene, box
@@ -31,12 +31,12 @@
                 animatedBox.rotateBox();
                 animatedBox.moveBox();                                      
 
-                if (box.position.x >  42 || box.position.x < -42 ){                        
+                if (box.position.x >  29 || box.position.x < -29 ){                        
                     animatedBox.direction.directX *= -1;                                                                     
                     animatedBox.randomChangeVelocity();                                                              
                 } 
 
-                if (box.position.y >  20 || box.position.y < -20 ){    
+                if (box.position.y >  14 || box.position.y < -14 ){    
                     animatedBox.direction.directY *= -1;     
                     animatedBox.randomChangeVelocity();                                                                                                                                                      
                 } 
@@ -51,14 +51,14 @@
                         directY : binary[Math.floor(Math.random() * 2)]
                     }
                     this.velocity = {
-                        velocX : 0.3,
-                        velocY : 0.3
+                        velocX : 0.2,
+                        velocY : 0.2
                     }
                 }
 
                 randomChangeVelocity(){
-                    this.velocity.velocY +=  binary[Math.floor(Math.random() * 2)] * 0.01;
-                    this.velocity.velocX +=  binary[Math.floor(Math.random() * 2)] * 0.01;       
+                    this.velocity.velocY +=  binary[Math.floor(Math.random() * 2)] * 0.005;
+                    this.velocity.velocX +=  binary[Math.floor(Math.random() * 2)] * 0.005;       
                 }
 
                 rotateBox(){
@@ -81,7 +81,7 @@
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
 
-            camera.position.z = 30;
+            camera.position.z = 20;
 
             const boxList = [];            
             const binary = [1, -1];                          
