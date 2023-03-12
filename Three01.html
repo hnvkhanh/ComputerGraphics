@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>My first three.js app</title>
+		<title>Random Box Chaos</title>
 		<style>
 			body { margin: 0; }
 		</style>
@@ -80,11 +80,8 @@
 
             camera.position.z = 30;
 
-            const boxList = [];
-            const step = [];
-            const binary = [1, -1];            
-            let stepX = 0.3;       
-            let stepY = 0.3;     
+            const boxList = [];            
+            const binary = [1, -1];                          
 
             document.addEventListener("keydown", (e) =>{      
                 let box;                                       
