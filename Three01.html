@@ -15,6 +15,9 @@
                 const geometry = new THREE.BoxGeometry( 1, 1, 1 );                
                 const material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
                 const box = new THREE.Mesh( geometry, material );  
+                const edges = new THREE.EdgesGeometry( geometry );
+                const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x808080 } ) );
+                box.add( line ); 
                 box.position.y = Math.random() * 20 * binary[Math.floor(Math.random() * 2)];     
                 box.position.x = Math.random() * 40 * binary[Math.floor(Math.random() * 2)];          
                 scene.add( box );                
@@ -86,9 +89,9 @@
             document.addEventListener("keydown", (e) =>{      
                 let box;                                       
                 scene, box = addRandomBox(e, scene);                
-                boxList.push(new animatedBox(box));    
-                step.push(1)                        
+                boxList.push(new animatedBox(box));                                   
             });
+            
 
 			function animate() {
 				requestAnimationFrame( animate );				                                
