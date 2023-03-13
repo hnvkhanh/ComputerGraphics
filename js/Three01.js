@@ -8,9 +8,9 @@ function addRandomBox(event, scene) {
     const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x808080 } ) );
     box.add( line ); 
     box.position.y = Math.random() * 10 * binary[Math.floor(Math.random() * 2)];     
-    box.position.x = Math.random() * 25 * binary[Math.floor(Math.random() * 2)];          
+    box.position.x = Math.random() * 25 * binary[Math.floor(Math.random() * 2)];           
     scene.add( box );                
-
+    
     return scene, box
 }
 
@@ -40,8 +40,8 @@ class animatedBox{
             directY : binary[Math.floor(Math.random() * 2)]
         }
         this.velocity = {
-            velocX : 0.2,
-            velocY : 0.2
+            velocX : 0.01,
+            velocY : 0.01
         }
     }
 
@@ -60,7 +60,37 @@ class animatedBox{
         this.box.position.x += this.velocity.velocX * this.direction.directX;    
         this.box.position.y += this.velocity.velocY * this.direction.directY;  
     }
+
+    setNewDirection(directX, directY){
+        this.direction.directX = directX;
+        this.direction.directY = directY;
+    }
+
+    increaseVelocity(factor){
+        this.velocity.velocX *= factor;
+        this.velocity.velocY *= factor; 
+    }
+
+    randomChangeDirection(){
+        let oldDirectX = this.direction.directX;
+        let oldDirectY = this.direction.directY;
+        let newDirectX, newDirectY;                
+        do {
+            newDirectX = binary[Math.floor(Math.random() * 2)];
+            newDirectY = binary[Math.floor(Math.random() * 2)];            
+        } while(newDirectX == oldDirectX && newDirectY == oldDirectY)
+
+        this.setNewDirection(newDirectX, newDirectY);     
+          
+    }
 }
+
+function animate() {
+    requestAnimationFrame( animate );				                                
+    boxList.forEach(boxAnimation);                                                   
+                         
+    renderer.render( scene, camera );
+}     
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xE8D5C4);
@@ -72,20 +102,59 @@ document.body.appendChild( renderer.domElement );
 
 camera.position.z = 20;
 
-const boxList = [];            
+const boxList = [];    
+const boxIdList = [];        
 const binary = [1, -1];                                      
 
 document.addEventListener("keydown", (e) =>{      
-    let box;                                       
-    scene, box = addRandomBox(e, scene);                
-    boxList.push(new animatedBox(box));                                   
-});
+    let box;                                      
+    scene, box = addRandomBox(e, scene);       
+    boxList.push(new animatedBox(box)); 
+    boxIdList.push(box.geometry.uuid)                                 
+});   
 
 
-function animate() {
-    requestAnimationFrame( animate );				                                
-    boxList.forEach(boxAnimation);                                                   
-                         
-    renderer.render( scene, camera );
-}            
+
+
+// Set up a raycaster
+var raycaster = new THREE.Raycaster();
+
+// Set up a mouse vector
+var mouse = new THREE.Vector2();
+
+// Add a click event listener to the canvas
+document.addEventListener('click', BoxOnMouseClick, false);
+
+function BoxOnMouseClick(event) {
+
+    // Calculate mouse position
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+    // Update the picking ray with the camera and mouse position
+    raycaster.setFromCamera(mouse, camera);
+
+    // Test if the ray intersects with any objects in the scene
+    var intersects = raycaster.intersectObjects(scene.children);
+
+    if (intersects.length > 0) {
+        let uuid = intersects[0].object.geometry.parameters.geometry.uuid
+        let clickedBox = boxList[boxIdList.indexOf(uuid)];   
+               
+        clickedBox.randomChangeDirection();
+        clickedBox.increaseVelocity(1.5);            
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
 animate();
