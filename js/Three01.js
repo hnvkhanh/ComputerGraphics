@@ -16,7 +16,7 @@ function addRandomBox(event, scene) {
 
 function boxAnimation(animatedBox, index, array){   
     var box = animatedBox.box;                                
-
+    let intersected = checkBoxIntersection(animatedBox, index);
     animatedBox.rotateBox();
     animatedBox.moveBox();                                      
 
@@ -30,6 +30,12 @@ function boxAnimation(animatedBox, index, array){
         animatedBox.randomChangeVelocity();                                                                                                                                                      
     } 
 
+    if (intersected){                
+        animatedBox.direction.directX *= -1;
+        animatedBox.direction.directY *= -1;
+        animatedBox.increaseVelocity(2);
+    }
+
 }
 
 class animatedBox{
@@ -42,12 +48,21 @@ class animatedBox{
         this.velocity = {
             velocX : 0.01,
             velocY : 0.01
+        }        
+        this.boundingBox = new THREE.Box3().setFromObject(box);
+    }
+
+    checkBbIntersection(otherBox){
+        if (this.boundingBox.intersectsBox(otherBox.boundingBox)) {
+            return true;
+        }else{
+            return false;
         }
     }
 
-    randomChangeVelocity(){
+    randomChangeVelocity(){        
         this.velocity.velocY +=  binary[Math.floor(Math.random() * 2)] * 0.005;
-        this.velocity.velocX +=  binary[Math.floor(Math.random() * 2)] * 0.005;       
+        this.velocity.velocX +=  binary[Math.floor(Math.random() * 2)] * 0.005;               
     }
 
     rotateBox(){
@@ -85,8 +100,39 @@ class animatedBox{
     }
 }
 
+function BoxOnMouseClick(event) {
+
+    // Calculate mouse position
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+    // Update the picking ray with the camera and mouse position
+    raycaster.setFromCamera(mouse, camera);
+
+    // Test if the ray intersects with any objects in the scene
+    var intersects = raycaster.intersectObjects(scene.children);
+
+    if (intersects.length > 0) {
+        let uuid = intersects[0].object.geometry.parameters.geometry.uuid
+        let clickedBox = boxList[boxIdList.indexOf(uuid)];   
+               
+        clickedBox.randomChangeDirection();
+        clickedBox.increaseVelocity(1.5);            
+    }
+
+}
+
+function checkBoxIntersection(inputBox, index){    
+    for (let i = 0; i < boxList.length; i++) {
+        if (index !== i && inputBox.checkBbIntersection(boxList[i])){                       
+            return true;           
+        }
+    }    
+    return false;
+}
+
 function animate() {
-    requestAnimationFrame( animate );				                                
+    requestAnimationFrame( animate );	    			                                
     boxList.forEach(boxAnimation);                                                   
                          
     renderer.render( scene, camera );
@@ -114,8 +160,6 @@ document.addEventListener("keydown", (e) =>{
 });   
 
 
-
-
 // Set up a raycaster
 var raycaster = new THREE.Raycaster();
 
@@ -124,33 +168,6 @@ var mouse = new THREE.Vector2();
 
 // Add a click event listener to the canvas
 document.addEventListener('click', BoxOnMouseClick, false);
-
-function BoxOnMouseClick(event) {
-
-    // Calculate mouse position
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-
-    // Update the picking ray with the camera and mouse position
-    raycaster.setFromCamera(mouse, camera);
-
-    // Test if the ray intersects with any objects in the scene
-    var intersects = raycaster.intersectObjects(scene.children);
-
-    if (intersects.length > 0) {
-        let uuid = intersects[0].object.geometry.parameters.geometry.uuid
-        let clickedBox = boxList[boxIdList.indexOf(uuid)];   
-               
-        clickedBox.randomChangeDirection();
-        clickedBox.increaseVelocity(1.5);            
-    }
-
-}
-
-
-
-
-
 
 
 
