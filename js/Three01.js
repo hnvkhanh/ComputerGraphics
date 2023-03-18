@@ -16,7 +16,6 @@ function addRandomBox(event, scene) {
 
 function boxAnimation(animatedBox, index, array){   
     var box = animatedBox.box;                                
-    let intersected = checkBoxIntersection(animatedBox, index);
     animatedBox.rotateBox();
     animatedBox.moveBox();                                      
 
@@ -29,12 +28,6 @@ function boxAnimation(animatedBox, index, array){
         animatedBox.direction.directY *= -1;     
         animatedBox.randomChangeVelocity();                                                                                                                                                      
     } 
-
-    if (intersected){                
-        animatedBox.direction.directX *= -1;
-        animatedBox.direction.directY *= -1;
-        animatedBox.increaseVelocity(2);
-    }
 
 }
 
@@ -52,13 +45,6 @@ class animatedBox{
         this.boundingBox = new THREE.Box3().setFromObject(box);
     }
 
-    checkBbIntersection(otherBox){
-        if (this.boundingBox.intersectsBox(otherBox.boundingBox)) {
-            return true;
-        }else{
-            return false;
-        }
-    }
 
     randomChangeVelocity(){        
         this.velocity.velocY +=  binary[Math.floor(Math.random() * 2)] * 0.005;
@@ -122,15 +108,6 @@ function BoxOnMouseClick(event) {
 
 }
 
-function checkBoxIntersection(inputBox, index){    
-    for (let i = 0; i < boxList.length; i++) {
-        if (index !== i && inputBox.checkBbIntersection(boxList[i])){                       
-            return true;           
-        }
-    }    
-    return false;
-}
-
 function animate() {
     requestAnimationFrame( animate );	    			                                
     boxList.forEach(boxAnimation);                                                   
@@ -168,9 +145,6 @@ var mouse = new THREE.Vector2();
 
 // Add a click event listener to the canvas
 document.addEventListener('click', BoxOnMouseClick, false);
-
-
-
 
 
 
